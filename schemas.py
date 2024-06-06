@@ -42,4 +42,6 @@ class Coursbase(BaseModel):
     Cname: str
     Department: str
     Credit: int
-    
+
+class Courseerror(BaseModel):
+    error: str

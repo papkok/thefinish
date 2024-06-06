@@ -20,7 +20,22 @@ def get_db():
         yield db
     finally:
         db.close()
+#----------------------------------------------------------------------------------        
+@app.post("/regprof/",response_model=schemas.Profbase)
+def create_prof(prof:schemas.Profbase,db:Session=Depends(get_db)):
+    db_profs = crud.get_prof(db,prof_id=prof.LID)
+    if db_profs:
+        raise HTTPException(status_code=400,detail="LID already registerd.")
+    return crud.create_profs(db=db,profs=prof)
+#--------------------------------------------------------------------------------
+@app.get("/delprofs/{lid}",response_model=schemas.Profbase)
+def delete_prof(lid:int,db:Session=Depends(get_db)):
+    db_profs = crud.get_prof(db,prof_id=lid)
+    if db_profs is None:
+        raise HTTPException(status_code=400,detail="LID Dose not exist.")
+    return crud.delete_prof(db=db,LID=lid)
 
+#-------------------------------------------------------------------------------------------
 
 
 
@@ -33,15 +48,15 @@ def create_cours(cours: schemas.Coursbase, db: Session = Depends(get_db)) -> sch
     
     db_course = crud.get_course(db, cid=cours.CID)
     if db_course:
-        raise HTTPException(status_code=400, detail="CID already registerd")
+        raise HTTPException(status_code=400, detail="CID already registerd.")
     return crud.create_course(db=db, course=cours)
+#------------------------------------------------------------------------------------------------
 
-
-@app.get("/delcous/{CID}",response_model=schemas.Coursbase)
-def delete_cours(CID:int,cours:schemas.Coursbase ,db:Session=Depends(get_db)):
+@app.get("/delcous/{CID}")
+def delete_cours(CID:int ,db:Session=Depends(get_db)):
     db_course = crud.get_course(db,cid=CID)
     if  db_course is None:
-        raise HTTPException(status_code=400,detail="CID Dose not exist")
+        raise HTTPException(status_code=400,detail="CID Dose not exist.")
     return crud.delete_cous(db=db, cid=CID)
 
 

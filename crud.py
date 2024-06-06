@@ -49,7 +49,7 @@ def get_prof(db:Session,prof_id:int):
 def create_profs(db:Session,profs:schemas.Profbase):
     db_prof = models.Prof(LID=profs.LID,Fname=profs.Fname,Lname=profs.Lname,ID=profs.ID,Department=profs.Department
                           ,Major=profs.Major,Birth=profs.Birth,Borncity=profs.Borncity,Address=profs.Address,
-                          Postalcode=profs.PostalCode,Cphone=profs.Cphone,Hphone=profs.Hphone,LcourseID=profs.LcourseID)
+                          PostalCode=profs.PostalCode,Cphone=profs.Cphone,Hphone=profs.Hphone,LcourseID=profs.LcourseID)
     db.add(db_prof)
     db.commit()
     db.refresh(db_prof)
