@@ -17,7 +17,7 @@ def create_student(db:Session,student:schemas.Stubase):
                                 PostalCode=student.PostalCode, Cphone=student.Cphone, Hphone=student.Hphone,
                                 Department=student.Department,
                                 Major=student.Major, Married=student.Married, ID=student.ID,
-                                scourseIDs=student.ScourseIDs, LIDs=student.LIDs)
+                                ScourseIDs=student.ScourseIDs, LIDs=student.LIDs)
     db.add(db_student)
     db.commit()
     db.refresh(db_student)

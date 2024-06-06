@@ -20,6 +20,23 @@ def get_db():
         yield db
     finally:
         db.close()
+
+@app.post("/regstuds/",response_model=schemas.Stubase)
+def create_student(stud:schemas.Stubase,db:Session=Depends(get_db)):
+    db_stud = crud.get_student(db,stu_id=stud.STID)
+    if db_stud:
+        raise HTTPException(status_code=400,detail="STID Already registerd")
+    return crud.create_student(db=db,student=stud)
+
+
+
+
+
+
+
+
+
+
 #----------------------------------------------------------------------------------        
 @app.post("/regprof/",response_model=schemas.Profbase)
 def create_prof(prof:schemas.Profbase,db:Session=Depends(get_db)):

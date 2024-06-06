@@ -10,7 +10,7 @@ class Stubase(BaseModel):
     IDS: str
     Borncity: str
     Address: str
-    postalCode: int
+    PostalCode: int
     Cphone: int
     Hphone: int
     Department: str

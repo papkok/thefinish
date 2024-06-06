@@ -14,7 +14,7 @@ class Student(Base):
     IDS = Column(String, unique=True)
     Borncity = Column(String)
     Address = Column(String)
-    postalCode = Column(Integer, unique=True)
+    PostalCode = Column(Integer, unique=True)
     Cphone = Column(Integer, unique=True)
     Hphone = Column(Integer, unique=True)
     Department = Column(String)
