@@ -1,4 +1,4 @@
-from typing import List
+from typing import List , Any , Dict
 
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
@@ -12,8 +12,9 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+class config:
+    orm_mode = True
 
-# Dependency
 def get_db():
     db = SessionLocal()
     try:
@@ -23,6 +24,10 @@ def get_db():
 
 @app.post("/regstuds/",response_model=schemas.Stubase)
 def create_student(stud:schemas.Stubase,db:Session=Depends(get_db)):
+    stud_dic = stud.dict()
+    validate_data = Valdations.StudentVald.validate(stud_dic)
+    if Valdations.StudentVald.resp:
+        raise HTTPException(status_code=422, detail=Valdations.StudentVald.resp)
     db_stud = crud.get_student(db,stu_id=stud.STID)
     if db_stud:
         raise HTTPException(status_code=400,detail="STID Already registerd")
