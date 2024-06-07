@@ -34,10 +34,10 @@ def update_student(db, STID: int, sutdent_id):
 
 
 def delete_student(db,STID:int):
-    stud = db.query(models.Student).filter(models.Student == STID).first()
-    db.delete(stud)
+    studs = db.query(models.Student).filter(models.Student.STID == STID).first()
+    db.delete(studs)
     db.commit()
-    return stud
+    return studs
 
 #--------------------------------------------------------------------------------------------
 
