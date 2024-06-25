@@ -1,9 +1,9 @@
-
+from re import fullmatch 
 from . import schemas
 from pydantic import ValidationError
 from fastapi import HTTPException
 from typing import ClassVar, Dict, Any
-
+from datetime import datetime
 
 class StudentVald(schemas.Stubase):
     resp: ClassVar[Dict[Any, Any]] = {}
@@ -34,39 +34,47 @@ class StudentVald(schemas.Stubase):
             elif not name.isalpha():
                 cls.resp["fname.Fname"] = "کارکتر های ورودی باید حروف باشند."
             else:
-                cls.resp["fname.Fname"] = "اسم شما معتبر است."
+                cls.resp["fname.Fname"] = ".نام شما معتبر است "
 
         def lname(name):
             if len(name) > 10:
                 cls.resp["lname.Lname"] = "نام از ده کارکتر طولانی تر است."
             elif any('a' <= char <= 'z' or 'A' <= char <= 'Z' for char in name):
-                cls.resp["lname.Lname"] = "اسم خود را به فارسی وارد کنید."
+                cls.resp["lname.Lname"] = "نام خانوادگی خود را به فارسی وارد کنید."
             elif not name.isalpha():
-                cls.resp["lname.Lname"] = "کارکتر های ورودی باید حروف باشند."
+                cls.resp["lname.Lname"] = ".کارکتر های ورودی باید حروف باشند"
             else:
-                cls.resp["lname.Lname"] = "نام خانوادگی شما معتبر است."
+                cls.resp["lname.Lname"] = " .نام خانوادگی شما معتبر است"
 
         def father_name(name):
             if len(name) > 10:
                 cls.resp["father_name.Father"] = "نام از ده کارکتر طولانی تر است."
             elif any('a' <= char <= 'z' or 'A' <= char <= 'Z' for char in name):
-                cls.resp["father_name.Father"] = "اسم خود را به فارسی وارد کنید."
+                cls.resp["father_name.Father"] = "نام پدر خود را به فارسی وارد کنید."
             elif not name.isalpha():
                 cls.resp["father_name.Father"] = "کارکتر های ورودی باید حروف باشند."
             else:
                 cls.resp["father_name.Father"] = "نام پدر شما معتبر است."
 
         def date_sham(date):
-            if int(date[5:7]) > 12 or int(date[8:]) > 31:
-                cls.resp["date_sham.Birth"] = "قالب ورودی اشتباه."
-            else:
-                cls.resp["date_sham.Birth"] = "تاریخ تولد ثبت شد."
+            Birth = datetime.strptime(date,'%Y/%m/%d')
+            try:
+                if int(Birth.year) not in range(1303,1402)  or int(Birth.month) not in range(1,13) or int(Birth.day) not in range (1,32):
+                   cls.resp["date_sham.Birth"] = "قالب ورودی اشتباه."
+                else:
+                   cls.resp["date_sham.Birth"] = "تاریخ تولد ثبت شد."
+            except ValueError:
+                    cls.resp["date_sham.Birth"] = "قالب ورودی اشتباه."
+            
+
+
 
         def passy(id_num):
-            if len(id_num) != 8 or not id_num[1:7].isdigit() or not id_num[0].isdigit() or not id_num[7].isdigit():
-                cls.resp["passy.IDS"] = "قالب ورودی اشتباه است."
+            pattern = (r'^\d\d\d\d\d\d.\d\d[آ-ی]$')
+            if fullmatch(pattern,id_num) == None:
+                cls.resp["passy.IDS"] = ".قالب ورودی شماره شناسنامه اشتباه است."
             else:
-                cls.resp["passy.IDS"] = "شماره ملی معتبر است."
+                cls.resp["passy.IDS"] = ".شماره شناسنامه معتبر است."
 
         def prov(city):
             valid_cities = ["اراک", 'اردبیل', "تبریز", 'اصفهان', "اهواز", 'ایلام', "بجنورد", 'بندرعباس', "بوشهر", "بیرجند",
