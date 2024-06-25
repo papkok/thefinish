@@ -81,6 +81,8 @@ def create_course(db:Session,course:schemas.Coursbase):
     db.commit()
     db.refresh(db_course)
     return db_course
+
+
 def update_cous(db, cid: int, cous_id):
     cous = db.query(models.Course).filter(models.Course.CID == cid).first()
     for key, value in cous_id.Course():
@@ -94,4 +96,4 @@ def delete_cous(db,cid:int):
     cous = db.query(models.Course).filter(models.Course.CID == cid).first()
     db.delete(cous)
     db.commit()
-    return cous
+    return '.درس مورد نظر پاک شد'

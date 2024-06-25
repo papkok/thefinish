@@ -21,7 +21,7 @@ def get_db():
         yield db
     finally:
         db.close()
-
+#--------------------------------------Student----------------------------------------
 @app.post("/regstuds/",response_model=schemas.Stubase)
 def create_student(stud:schemas.Stubase,db:Session=Depends(get_db)):
     stud_dic = stud.dict()
@@ -33,21 +33,21 @@ def create_student(stud:schemas.Stubase,db:Session=Depends(get_db)):
         raise HTTPException(status_code=400,detail="STID Already registerd")
     return crud.create_student(db=db,student=stud)
 
-#------------------------------------------------------------------------------------
+
 @app.get("/delstuds/{stid}",)
 def Delete_Students(stid:int,db:Session=Depends(get_db)):
     db_stud = crud.get_student(db,stu_id=stid)
     if db_stud is None:
         raise HTTPException(status_code=400,detail="STID dose not Exisit.")
     return crud.delete_student(db=db,STID=stid)
-#----------------------------------------------------------------------------------        
+#---------------------------------Prof-------------------------------------------------        
 @app.post("/regprof/",response_model=schemas.Profbase)
 def create_prof(prof:schemas.Profbase,db:Session=Depends(get_db)):
     db_profs = crud.get_prof(db,prof_id=prof.LID)
     if db_profs:
         raise HTTPException(status_code=400,detail="LID already registerd.")
     return crud.create_profs(db=db,profs=prof)
-#--------------------------------------------------------------------------------
+
 @app.get("/delprofs/{lid}")
 def delete_prof(lid:int,db:Session=Depends(get_db)):
     db_profs = crud.get_prof(db,prof_id=lid)
@@ -67,7 +67,7 @@ def create_cours(cours: schemas.Coursbase, db: Session = Depends(get_db)) -> sch
     if db_course:
         raise HTTPException(status_code=400, detail="CID already registerd.")
     return crud.create_course(db=db, course=cours)
-#------------------------------------------------------------------------------------------------
+
 @app.get("/delcous/{CID}")
 def delete_cours(CID:int ,db:Session=Depends(get_db)):
     db_course = crud.get_course(db,cid=CID)

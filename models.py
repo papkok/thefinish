@@ -1,8 +1,8 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String ,Table
 from sqlalchemy.orm import relationship
-
+from sqlalchemy.ext.declarative import declarative_base
 from .database import Base
-
+Base = declarative_base()
 
 class Student(Base):
     __tablename__ = "Student"
@@ -41,7 +41,7 @@ class Prof(Base):
     PostalCode = Column(Integer, unique=True)
     Cphone = Column(Integer, unique=True)
     Hphone = Column(Integer, unique=True)
-    LcourseID = Column(String, ForeignKey("Course.CID"))
+    LcourseID = Column(Integer, ForeignKey("Course.CID"))
     conf = relationship("Student", back_populates="con1")
     con3 = relationship("Course", back_populates="conc1")
 
