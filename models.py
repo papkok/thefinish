@@ -4,6 +4,21 @@ from sqlalchemy.ext.declarative import declarative_base
 from .database import Base
 Base = declarative_base()
 
+
+Stu_profs_association = Table(
+    'student_proffeser',
+    Base.metadata,
+    Column('Student_ID', Integer, ForeignKey('Student.STID')),
+    Column('Proffesrt_ID', Integer, ForeignKey('Profs.LID'))
+)
+stu_cours_asso = Table('student_course',
+                       Base.metadata,
+                       Column('student_ID',Integer,ForeignKey('Student.STID')),
+                       Column('Course_ID',Integer,ForeignKey('Course.CID'))
+)
+
+
+
 class Student(Base):
     __tablename__ = "Student"
     STID = Column(Integer, unique=True, primary_key=True)
@@ -21,10 +36,10 @@ class Student(Base):
     Major = Column(String)
     Married = Column(String, default=False)
     ID = Column(Integer, unique=True)
-    ScourseIDs = Column(Integer, ForeignKey("Course.CID"))
-    LIDs = Column(Integer, ForeignKey("Profs.LID"))
-    con1 = relationship("Prof", back_populates="conf")
-    con2 = relationship("Course", back_populates="conc")
+    
+    
+    LIDs = relationship("Prof", secondary = Stu_profs_association , backref="students")
+    ScourseIDs = relationship("Course", secondary = stu_cours_asso ,backref="students")
 
 
 class Prof(Base):
@@ -42,7 +57,7 @@ class Prof(Base):
     Cphone = Column(Integer, unique=True)
     Hphone = Column(Integer, unique=True)
     LcourseID = Column(Integer, ForeignKey("Course.CID"))
-    conf = relationship("Student", back_populates="con1")
+    
     con3 = relationship("Course", back_populates="conc1")
 
 
@@ -52,5 +67,5 @@ class Course(Base):
     Cname = Column(String)
     Department = Column(String)
     Credit = Column(Integer)
-    conc = relationship("Student", back_populates='con2')
+    
     conc1 = relationship("Prof", back_populates="con3")
