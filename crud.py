@@ -1,27 +1,38 @@
-from sqlalchemy.orm import Session
-
-from . import schemas
-
-from . import models
-
-def get_student(db: Session, stu_id: int):
-    return db.query(models.Student).filter(models.Student.STID == stu_id).first()
+from sqlalchemy.orm import Session , joinedload
+from fastapi import Depends, FastAPI, HTTPException
+from . import schemas , models 
 
 
 
 
-def create_student(db:Session,student:schemas.Stubase):
-    db_student = models.Student(STID=student.STID, Fname=student.Fname, Lname=student.Lname,
-                                Father=student.Father, Birth=student.Birth,
-                                IDS=student.IDS, Borncity=student.Borncity, Address=student.Address,
-                                PostalCode=student.PostalCode, Cphone=student.Cphone, Hphone=student.Hphone,
-                                Department=student.Department,
-                                Major=student.Major, Married=student.Married, ID=student.ID,
-                                ScourseIDs=student.ScourseIDs, LIDs=student.LIDs)
+async def get_student(db:Session,stu:int):
+    try:
+       query = db.query(models.Student).filter(models.Student.STID==stu).options(joinedload(models.Student.ScourseIDs),joinedload(models.Student.LIDs)).first()
+       return (True, query , [])
+    except BaseException as nig:
+        print(nig)
+        return (False , {} , ["student dosent exixst."])
+
+def getnorm_student(db:Session,stu_id:int):
+    return db.query(models.Student).filter(models.Student.STID==stu_id).first()
+
+
+
+def create_student(db:Session,data):
+    db_student = models.Student(**data.dict())
+    
+    
     db.add(db_student)
     db.commit()
     db.refresh(db_student)
     return db_student
+
+def create_stu_course(db:Session,student,course):
+    db_student = db.query(models.Student).filter(models.Student.STID==student).first()
+    dbcourse = db.query(models.Course).filter(models.Course.CID==course).first()
+    dbcourse.CID.append_foreign_key(db_student.ScourseIDs)
+    db.commit()
+
 
 
 def update_student(db, STID: int, sutdent_id):
@@ -49,7 +60,7 @@ def get_prof(db:Session,prof_id:int):
 def create_profs(db:Session,profs:schemas.Profbase):
     db_prof = models.Prof(LID=profs.LID,Fname=profs.Fname,Lname=profs.Lname,ID=profs.ID,Department=profs.Department
                           ,Major=profs.Major,Birth=profs.Birth,Borncity=profs.Borncity,Address=profs.Address,
-                          PostalCode=profs.PostalCode,Cphone=profs.Cphone,Hphone=profs.Hphone,LcourseID=profs.LcourseID)
+                          PostalCode=profs.PostalCode,Cphone=profs.Cphone,Hphone=profs.Hphone)
     db.add(db_prof)
     db.commit()
     db.refresh(db_prof)

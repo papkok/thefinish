@@ -1,5 +1,5 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String ,Table
-from sqlalchemy.orm import relationship
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String ,Table 
+from sqlalchemy.orm import relationship , mapped_column , Mapped
 from sqlalchemy.ext.declarative import declarative_base
 from .database import Base
 Base = declarative_base()
@@ -13,10 +13,14 @@ Stu_profs_association = Table(
 )
 stu_cours_asso = Table('student_course',
                        Base.metadata,
-                       Column('student_ID',Integer,ForeignKey('Student.STID')),
-                       Column('Course_ID',Integer,ForeignKey('Course.CID'))
+                       Column('student_ID',Integer,ForeignKey('Student.STID'),primary_key=True),
+                       Column('Course_ID',Integer,ForeignKey('Course.CID'),primary_key=True)
 )
-
+prof_course = Table('Proffeser_Course',
+                    Base.metadata,
+                    Column("prof_id",Integer,ForeignKey("Profs.LID"),primary_key=True),
+                    Column("Course_id",Integer,ForeignKey("Course.CID"),primary_key=True)
+)
 
 
 class Student(Base):
@@ -30,16 +34,16 @@ class Student(Base):
     Borncity = Column(String)
     Address = Column(String)
     PostalCode = Column(Integer, unique=True)
-    Cphone = Column(Integer, unique=True)
-    Hphone = Column(Integer, unique=True)
+    Cphone = Column(String, unique=True)
+    Hphone = Column(String, unique=True)
     Department = Column(String)
     Major = Column(String)
     Married = Column(String, default=False)
-    ID = Column(Integer, unique=True)
+    ID = Column(String, unique=True)
     
     
-    LIDs = relationship("Prof", secondary = Stu_profs_association , backref="students")
-    ScourseIDs = relationship("Course", secondary = stu_cours_asso ,backref="students")
+    LIDs = relationship("Prof", secondary = Stu_profs_association , backref="Profs")
+    ScourseIDs = relationship("Course", secondary = stu_cours_asso ,backref="Course")
 
 
 class Prof(Base):
@@ -56,9 +60,9 @@ class Prof(Base):
     PostalCode = Column(Integer, unique=True)
     Cphone = Column(Integer, unique=True)
     Hphone = Column(Integer, unique=True)
-    LcourseID = Column(Integer, ForeignKey("Course.CID"))
+    LcourseID = relationship("Course",secondary=prof_course,backref="course")
     
-    con3 = relationship("Course", back_populates="conc1")
+    
 
 
 class Course(Base):
@@ -68,4 +72,4 @@ class Course(Base):
     Department = Column(String)
     Credit = Column(Integer)
     
-    conc1 = relationship("Prof", back_populates="con3")
+    

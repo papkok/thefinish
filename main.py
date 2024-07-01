@@ -1,6 +1,6 @@
 from typing import List , Any , Dict
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, APIRouter, HTTPException , Response , status
 from sqlalchemy.orm import Session
 
 from . import crud, schemas , Valdations
@@ -10,7 +10,7 @@ from .database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = APIRouter()
 
 class config:
     orm_mode = True
@@ -22,21 +22,33 @@ def get_db():
     finally:
         db.close()
 #--------------------------------------Student----------------------------------------
+@app.get("/getstu/{STID}")
+async def get_student(STID:int,res:Response,db:Session = Depends(get_db)):
+    valid, data, errors = await crud.get_student(db=db,stu=STID)
+    res.status_code = status.HTTP_200_OK if valid else status.HTTP_400_BAD_REQUEST
+    return {"status": valid, "data": data, "errors": errors}
+
 @app.post("/regstuds/",response_model=schemas.Stubase)
 def create_student(stud:schemas.Stubase,db:Session=Depends(get_db)):
-    stud_dic = stud.dict()
-    validate_data = Valdations.StudentVald.validate(stud_dic)
-    if Valdations.StudentVald.resp:
-        raise HTTPException(status_code=422, detail=Valdations.StudentVald.resp)
-    db_stud = crud.get_student(db,stu_id=stud.STID)
+    validator = Valdations.StudentVald
+    validate_data = validator.validate(stud.dict())
+    if any(value for value in validate_data.values()):
+        raise HTTPException(status_code=400, detail=validate_data)
+    
+    db_stud = crud.getnorm_student(db,stu_id=stud.STID)
     if db_stud:
         raise HTTPException(status_code=400,detail="STID Already registerd")
-    return crud.create_student(db=db,student=stud)
+    return crud.create_student(data = stud ,db=db)
 
+@app.put("/student/course/{stid}/{cid}")
+async def add_student_course(stid:int, cid:int, res: Response , db:Session = Depends(get_db)):
+    valid, errors = await crud.create_stu_course(db=db,student=stid,course=cid)
+    res.status_code = status.HTTP_201_CREATED if valid else status.HTTP_400_BAD_REQUEST
+    return {"status": valid, "errors": errors}
 
 @app.get("/delstuds/{stid}",)
 def Delete_Students(stid:int,db:Session=Depends(get_db)):
-    db_stud = crud.get_student(db,stu_id=stid)
+    db_stud = crud.getnorm_student(db,stu_id=stid)
     if db_stud is None:
         raise HTTPException(status_code=400,detail="STID dose not Exisit.")
     return crud.delete_student(db=db,STID=stid)

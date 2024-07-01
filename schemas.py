@@ -11,15 +11,13 @@ class Stubase(BaseModel):
     Borncity: str
     Address: str
     PostalCode: int
-    Cphone: int
-    Hphone: int
+    Cphone: str
+    Hphone: str
     Department: str
     Major: str
     Married: str
-    ID: int
-    ScourseIDs: int
-    LIDs: int
-
+    ID: str
+    
 
 class Profbase(BaseModel):
     LID: int
@@ -34,7 +32,7 @@ class Profbase(BaseModel):
     PostalCode: int
     Cphone: int
     Hphone: int
-    LcourseID: int
+    
 
 
 class Coursbase(BaseModel):
