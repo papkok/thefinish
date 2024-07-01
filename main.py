@@ -40,11 +40,13 @@ def create_student(stud:schemas.Stubase,db:Session=Depends(get_db)):
         raise HTTPException(status_code=400,detail="STID Already registerd")
     return crud.create_student(data = stud ,db=db)
 
-@app.put("/student/course/{stid}/{cid}")
-async def add_student_course(stid:int, cid:int, res: Response , db:Session = Depends(get_db)):
-    valid, errors = await crud.create_stu_course(db=db,student=stid,course=cid)
-    res.status_code = status.HTTP_201_CREATED if valid else status.HTTP_400_BAD_REQUEST
-    return {"status": valid, "errors": errors}
+@app.put("/add_student_course/{student_id}/{course_id}")
+def add_student_to_course(student_id: int, course_id: int, db: Session = Depends(get_db)):
+    success, message = crud.add_student_course_relation(db=db, student_id=student_id, course_id=course_id)
+    if success:
+        return {"message": message}
+    else:
+        raise HTTPException(status_code=400, detail=message)
 
 @app.get("/delstuds/{stid}",)
 def Delete_Students(stid:int,db:Session=Depends(get_db)):

@@ -27,12 +27,19 @@ def create_student(db:Session,data):
     db.refresh(db_student)
     return db_student
 
-def create_stu_course(db:Session,student,course):
-    db_student = db.query(models.Student).filter(models.Student.STID==student).first()
-    dbcourse = db.query(models.Course).filter(models.Course.CID==course).first()
-    dbcourse.CID.append_foreign_key(db_student.ScourseIDs)
-    db.commit()
+def add_student_course_relation(db: Session, student_id: int, course_id: int):
+    db_stud = db.query(models.Student).filter(models.Student.STID == student_id).first()
+    db_cous = db.query(models.Course).filter(models.Course.CID == course_id).first()
 
+    if not db_stud:
+        return False, ".دانشجو وجود ندارد"
+    
+    if not db_cous:
+        return False, ".درس وجود ندارد"
+
+    db_stud.ScourseIDs.append(db_cous)
+    db.commit()
+    return True, ".درس با موفقیت برای دانشجو انتخاب شد"
 
 
 def update_student(db, STID: int, sutdent_id):
