@@ -28,6 +28,7 @@ def create_student(db:Session,data):
     return db_student
 
 def add_student_course_relation(db: Session, student_id: int, course_id: int):
+   try:
     db_stud = db.query(models.Student).filter(models.Student.STID == student_id).first()
     db_cous = db.query(models.Course).filter(models.Course.CID == course_id).first()
 
@@ -40,7 +41,25 @@ def add_student_course_relation(db: Session, student_id: int, course_id: int):
     db_stud.ScourseIDs.append(db_cous)
     db.commit()
     return True, ".درس با موفقیت برای دانشجو انتخاب شد"
+   except BaseException as Nigg:
+       return False , ".درس مورد نظر قبلا ثبت شده است"
+       
+def add_student_professer_relation(db:Session , student_id:int , prof_id:int):
+   try: 
+    db_stud = db.query(models.Student).filter(models.Student.STID == student_id).first()
+    db_prof = db.query(models.Prof).filter(models.Prof.LID==prof_id).first()
 
+    if not db_stud:
+        return False , ".دانشجو وجود ندارد"
+    
+    if not db_prof:
+        return False , ".استاد وجود ندارد"
+    
+    db_stud.LIDs.append(db_prof)
+    db.commit()
+    return True , ".استاد با موفقیت برای برای دانشجو انتخاب شد"
+   except BaseException as Nigg:
+       return False , ".استاد مورد نظر قبلا ثبت شده است"
 
 def update_student(db, STID: int, sutdent_id):
     stud = db.query(models.Student).filter(models.Student.STID == STID).first()
@@ -56,6 +75,19 @@ def delete_student(db,STID:int):
     db.delete(studs)
     db.commit()
     return studs
+def delete_stuprof(db:Session, STID: int , LID: int):
+    
+    st = db.query(models.Student).filter(models.Student.STID == STID).first()
+    pf = db.query(models.Prof).filter(models.Prof.LID == LID).first()
+    if not st:
+        return False , ".دانشجو وجود ندارد"
+    
+    if not pf:
+        return False , ".استاد وجود ندارد"
+
+    st.LIDs.remove(pf)
+    db.commit()
+    return True , ".استاد مورد نظر حذف شد"
 
 #--------------------------------------------------------------------------------------------
 

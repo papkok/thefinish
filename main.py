@@ -1,6 +1,6 @@
 from typing import List , Any , Dict
 
-from fastapi import Depends, APIRouter, HTTPException , Response , status
+from fastapi import Depends, APIRouter, HTTPException , Response , status, FastAPI
 from sqlalchemy.orm import Session
 
 from . import crud, schemas , Valdations
@@ -10,7 +10,7 @@ from .database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
-app = APIRouter()
+app = FastAPI()
 
 class config:
     orm_mode = True
@@ -47,8 +47,22 @@ def add_student_to_course(student_id: int, course_id: int, db: Session = Depends
         return {"message": message}
     else:
         raise HTTPException(status_code=400, detail=message)
-
-@app.get("/delstuds/{stid}",)
+    
+@app.put("/add_student_prof/{student_id}/{prof_id}")
+def add_student_to_profs(student_id: int , prof_id: int , db:Session = Depends(get_db)):
+    success , message = crud.add_student_professer_relation(db=db , student_id=student_id , prof_id=prof_id)
+    if success:
+        return{"message":message}
+    else:
+        raise HTTPException(status_code=400 , detail=message)
+@app.put("/delete_stuprof/{STID}/{LID}")
+def Delete_Prof_Stu(STID:int , LID:int , db:Session=Depends(get_db)):
+    success , message = crud.delete_stuprof(db=db , STID=STID , LID=LID)
+    if success:
+        return{"message":message}
+    else:
+        raise HTTPException(status_code=400 , detail=message)
+@app.get("/delstuds/{stid}")
 def Delete_Students(stid:int,db:Session=Depends(get_db)):
     db_stud = crud.getnorm_student(db,stu_id=stid)
     if db_stud is None:
