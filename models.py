@@ -1,5 +1,5 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String ,Table 
-from sqlalchemy.orm import relationship , mapped_column , Mapped
+from sqlalchemy.orm import relationship , mapped_column , Mapped , backref
 from sqlalchemy.ext.declarative import declarative_base
 from .database import Base
 Base = declarative_base()
@@ -9,17 +9,17 @@ Stu_profs_association = Table(
     'student_proffeser',
     Base.metadata,
     Column('Student_ID', Integer, ForeignKey('Student.STID'),primary_key=True),
-    Column('Proffesrt_ID', Integer, ForeignKey('Profs.LID'),primary_key=True,unique=True)
+    Column('Proffesrt_ID', Integer, ForeignKey('Profs.LID'),primary_key=True)
 )
 stu_cours_asso = Table('student_course',
                        Base.metadata,
                        Column('student_ID',Integer,ForeignKey('Student.STID'),primary_key=True),
-                       Column('Course_ID',Integer,ForeignKey('Course.CID'),primary_key=True , unique= True)
+                       Column('Course_ID',Integer,ForeignKey('Course.CID'),primary_key=True)
 )
 prof_course = Table('Proffeser_Course',
                     Base.metadata,
                     Column("prof_id",Integer,ForeignKey("Profs.LID"),primary_key=True),
-                    Column("Course_id",Integer,ForeignKey("Course.CID"),unique=True)
+                    Column("Course_id",Integer,ForeignKey("Course.CID"),primary_key=True)
 )
 
 
@@ -60,7 +60,7 @@ class Prof(Base):
     PostalCode = Column(Integer, unique=True)
     Cphone = Column(Integer, unique=True)
     Hphone = Column(Integer, unique=True)
-    LcourseID = relationship("Course",secondary=prof_course,backref="course")
+    LcourseID = relationship("Course",secondary=prof_course,backref= backref("course", lazy='joined'))
     
     
 

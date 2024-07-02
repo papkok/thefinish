@@ -62,19 +62,39 @@ def Delete_Prof_Stu(STID:int , LID:int , db:Session=Depends(get_db)):
         return{"message":message}
     else:
         raise HTTPException(status_code=400 , detail=message)
+
+
+@app.put("/deletestucous/{STID}/{CID}")
+def delete_cous_stu(STID:int,CID:int,db:Session=Depends(get_db)):
+    success , message = crud.delete_stucous(db=db , STID=STID , CID=CID)
+    if success:
+        return{"message":message}
+    else:
+        raise HTTPException(status_code=400 , detail=message)
+
 @app.get("/delstuds/{stid}")
 def Delete_Students(stid:int,db:Session=Depends(get_db)):
     db_stud = crud.getnorm_student(db,stu_id=stid)
     if db_stud is None:
         raise HTTPException(status_code=400,detail="STID dose not Exisit.")
     return crud.delete_student(db=db,STID=stid)
-#---------------------------------Prof-------------------------------------------------        
+#---------------------------------Professor-------------------------------------------------        
 @app.post("/regprof/",response_model=schemas.Profbase)
 def create_prof(prof:schemas.Profbase,db:Session=Depends(get_db)):
     db_profs = crud.get_prof(db,prof_id=prof.LID)
     if db_profs:
         raise HTTPException(status_code=400,detail="LID already registerd.")
     return crud.create_profs(db=db,profs=prof)
+
+@app.put("/add_porf_course/{LID}/{CID}")
+def procous(LID:int,CID:int,db:Session=Depends(get_db)):
+    success, message = crud.add_Proffeser_course_relation(db=db, LID = LID, CID=CID)
+    if success:
+        return {"message": message}
+    else:
+        raise HTTPException(status_code=400, detail=message)
+    
+
 
 @app.get("/delprofs/{lid}")
 def delete_prof(lid:int,db:Session=Depends(get_db)):

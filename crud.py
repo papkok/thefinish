@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session , joinedload
+from sqlalchemy.orm import Session , joinedload , join
 from fastapi import Depends, FastAPI, HTTPException
 from . import schemas , models 
 
@@ -31,13 +31,16 @@ def add_student_course_relation(db: Session, student_id: int, course_id: int):
    try:
     db_stud = db.query(models.Student).filter(models.Student.STID == student_id).first()
     db_cous = db.query(models.Course).filter(models.Course.CID == course_id).first()
-
+    db_check = db.query(models.stu_cours_asso).filter((models.stu_cours_asso.c.student_ID == student_id) & (models.stu_cours_asso.c.Course_ID == course_id)).first()
     if not db_stud:
         return False, ".دانشجو وجود ندارد"
     
     if not db_cous:
         return False, ".درس وجود ندارد"
-
+    
+    if db_check:
+        return False , ".درس مورد نظر قبلا انتخاب شده است"
+    
     db_stud.ScourseIDs.append(db_cous)
     db.commit()
     return True, ".درس با موفقیت برای دانشجو انتخاب شد"
@@ -48,17 +51,20 @@ def add_student_professer_relation(db:Session , student_id:int , prof_id:int):
    try: 
     db_stud = db.query(models.Student).filter(models.Student.STID == student_id).first()
     db_prof = db.query(models.Prof).filter(models.Prof.LID==prof_id).first()
-
+    db_check = db.query(models.Stu_profs_association).filter((models.Stu_profs_association.c.Student_ID == student_id) & (models.Stu_profs_association.c.Proffesrt_ID == prof_id)).first()
     if not db_stud:
         return False , ".دانشجو وجود ندارد"
     
     if not db_prof:
         return False , ".استاد وجود ندارد"
     
+    if db_check:
+        return False , ".استاد مورد نظر قبلا انتخاب شده است"
     db_stud.LIDs.append(db_prof)
     db.commit()
     return True , ".استاد با موفقیت برای برای دانشجو انتخاب شد"
    except BaseException as Nigg:
+       print(Nigg)
        return False , ".استاد مورد نظر قبلا ثبت شده است"
 
 def update_student(db, STID: int, sutdent_id):
@@ -75,8 +81,11 @@ def delete_student(db,STID:int):
     db.delete(studs)
     db.commit()
     return studs
+
+
+
 def delete_stuprof(db:Session, STID: int , LID: int):
-    
+   try: 
     st = db.query(models.Student).filter(models.Student.STID == STID).first()
     pf = db.query(models.Prof).filter(models.Prof.LID == LID).first()
     if not st:
@@ -88,7 +97,27 @@ def delete_stuprof(db:Session, STID: int , LID: int):
     st.LIDs.remove(pf)
     db.commit()
     return True , ".استاد مورد نظر حذف شد"
+   except BaseException as Nigg:
+       return False , ".استاد مورد نظر اضافه نشده یا قبلا حذف شده است"
 
+
+ 
+def delete_stucous(db:Session,STID:int,CID:int):
+   try: 
+    st = db.query(models.Student).filter(models.Student.STID == STID).first()
+    cs = db.query(models.Course).filter(models.Course.CID == CID).first()
+    if not st:
+        return False , ".دانشجو وجود ندارد"
+    
+    if not cs:
+        return False , ".درس وجود ندارد"
+
+    st.ScourseIDs.remove(cs)
+    db.commit()
+    return True , ".درس مورد نظر حذف شد"
+   except BaseException as nigg:
+       return False , ".درس مورد نظر قبلا حذف شده است"
+ 
 #--------------------------------------------------------------------------------------------
 
 def get_prof(db:Session,prof_id:int):
@@ -106,6 +135,31 @@ def create_profs(db:Session,profs:schemas.Profbase):
     return db_prof
 
 
+def add_Proffeser_course_relation(db: Session, LID: int, CID: int):
+    try: 
+        db_cous = db.query(models.Course).filter(models.Course.CID == CID).first()
+        db_prof = db.query(models.Prof).filter(models.Prof.LID == LID).first()
+        
+        
+        db_check = db.query(models.prof_course).filter((models.prof_course.c.prof_id == LID) & (models.prof_course.c.Course_id == CID)).first()
+
+        if not db_cous:
+            return False, ".درس وجود ندارد"
+
+        if not db_prof:
+            return False, ".استاد وجود ندارد"
+
+        if db_check:
+            return False, "این درس قبلا ثبت شده است."
+
+        db_prof.LcourseID.append(db_cous)
+        db.commit()
+        return True, ".درس با موفقیت برای برای استاد ثبت شد"
+
+    except BaseException as e:
+        print(e)
+        return False, ".درس مورد نظر قبلا ثبت شده است"
+
 def update_prof(db, LID: int, prof_id):
     prof = db.query(models.Prof).filter(models.Prof.LID == LID).first()
     for key, value in prof_id.Prof():
@@ -113,7 +167,21 @@ def update_prof(db, LID: int, prof_id):
     db.commit()
     db.refresh(prof)
     return prof
+def delete_profcous(db:Session,STID:int,CID:int):
+   try: 
+    st = db.query(models.Student).filter(models.Student.STID == STID).first()
+    cs = db.query(models.Course).filter(models.Course.CID == CID).first()
+    if not st:
+        return False , ".دانشجو وجود ندارد"
+    
+    if not cs:
+        return False , ".درس وجود ندارد"
 
+    st.ScourseIDs.remove(cs)
+    db.commit()
+    return True , ".درس مورد نظر حذف شد"
+   except BaseException as nigg:
+       return False , ".درس مورد نظر قبلا حذف شده است"
 
 def delete_prof(db,LID:int):
     prof = db.query(models.Prof).filter(models.Prof.LID == LID).first()
