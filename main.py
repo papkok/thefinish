@@ -109,6 +109,14 @@ def Delete_Students(stid:int,db:Session=Depends(get_db)):
         raise HTTPException(status_code=400,detail="STID dose not Exisit.")
     return crud.delete_student(db=db,STID=stid)
 #---------------------------------Professor-------------------------------------------------        
+@app.get("/getprof/{LID}")
+async def get_student(LID:int,res:Response,db:Session = Depends(get_db)):
+    valid, data, errors = await crud.getthe_prof(db=db,lid=LID)
+    res.status_code = status.HTTP_200_OK if valid else status.HTTP_400_BAD_REQUEST
+    return {"status": valid, "data": data, "errors": errors}
+
+
+
 @app.post("/regprof/",response_model=schemas.Profbase)
 def create_prof(prof:schemas.Profbase,db:Session=Depends(get_db)):
     db_profs = crud.get_prof(db,prof_id=prof.LID)

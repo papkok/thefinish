@@ -129,7 +129,13 @@ def delete_stucous(db:Session,STID:int,CID:int):
 def get_prof(db:Session,prof_id:int):
     return db.query(models.Prof).filter(models.Prof.LID == prof_id).first()
 
-
+async def getthe_prof(db:Session,lid:int):
+    try:
+       query = db.query(models.Prof).filter(models.Prof.LID==lid).options(joinedload(models.Prof.LcourseID)).first()
+       return (True, query , [])
+    except BaseException as nig:
+        print(nig)
+        return (False , {} , [".استاد یافت نشد"])
 #_____________________________________________________________________________________________________________________________
 def create_profs(db:Session,profs:schemas.Profbase):
     db_prof = models.Prof(LID=profs.LID,Fname=profs.Fname,Lname=profs.Lname,ID=profs.ID,Department=profs.Department
