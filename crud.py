@@ -166,13 +166,19 @@ def add_Proffeser_course_relation(db: Session, LID: int, CID: int):
         print(e)
         return False, ".درس مورد نظر قبلا ثبت شده است"
 #_____________________________________________________________________________________________________________________________________________________
-def update_prof(db, LID: int, prof_id):
-    prof = db.query(models.Prof).filter(models.Prof.LID == LID).first()
-    for key, value in prof_id.Prof():
-        setattr(prof, key, value)
+def update_Professor(db: Session, LID: int, prof_update: schemas.Profup):
+    Prof = db.query(models.Prof).filter(models.Prof.LID == LID).first()
+    if not Prof:
+        return None  
+    
+    update_data = prof_update.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(Prof, key, value)
+    
+    db.add(Prof)
     db.commit()
-    db.refresh(prof)
-    return prof
+    db.refresh(Prof)
+    return Prof
 #_____________________________________________________________________________________________________________________________________________________
 def delete_profcous(db:Session,LID:int,CID:int):
    try: 

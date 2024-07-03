@@ -48,6 +48,20 @@ class Profbase(BaseModel):
     PostalCode: int
     Cphone: int
     Hphone: int
+class Profup(BaseModel):
+    LID: int
+    Fname: str
+    Lname: str
+    ID: int
+    Department: str
+    Major: str
+    Birth: str
+    Borncity: str
+    Address: str
+    PostalCode: int
+    Cphone: int
+    Hphone: int
+
     
 
 

@@ -117,6 +117,20 @@ def create_prof(prof:schemas.Profbase,db:Session=Depends(get_db)):
     return crud.create_profs(db=db,profs=prof)
 
 
+@app.patch("/upprof/{LID}", response_model=schemas.Profup)
+def update_Prof(LID: int, prof_update: schemas.Profup, db: Session = Depends(get_db)):
+    prof = crud.get_prof(db=db, prof_id = LID)
+    if prof is None:
+        raise HTTPException(status_code=404, detail=".استاد یافت نشد")
+
+    updated_prof = crud.update_Professor(db, LID = LID, prof_update=prof_update)
+    if updated_prof is None:
+        raise HTTPException(status_code=404, detail=".استاد یافت نشد")
+    
+    return updated_prof
+
+
+
 
 @app.put("/add_porf_course/{LID}/{CID}")
 def procous(LID:int,CID:int,db:Session=Depends(get_db)):
