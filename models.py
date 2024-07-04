@@ -51,15 +51,15 @@ class Prof(Base):
     LID = Column(Integer, primary_key=True, unique=True)
     Fname = Column(String)
     Lname = Column(String)
-    ID = Column(Integer, unique=True)
+    ID = Column(String, unique=True)
     Department = Column(String)
     Major = Column(String)
     Birth = Column(String)
     Borncity = Column(String)
     Address = Column(String)
     PostalCode = Column(Integer, unique=True)
-    Cphone = Column(Integer, unique=True)
-    Hphone = Column(Integer, unique=True)
+    Cphone = Column(String, unique=True)
+    Hphone = Column(String, unique=True)
     LcourseID = relationship("Course",secondary=prof_course,backref= backref("course", lazy='joined'))
     
     

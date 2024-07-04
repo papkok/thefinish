@@ -3,7 +3,7 @@ from typing import List , Any , Dict
 from fastapi import Depends, APIRouter, HTTPException , Response , status, FastAPI
 from sqlalchemy.orm import Session
 
-from . import crud, schemas , Valdations
+from . import crud, schemas , Valdations , ValdationsP , ValdationsC
 
 from . import models
 from .database import SessionLocal, engine
@@ -31,7 +31,7 @@ async def get_student(STID:int,res:Response,db:Session = Depends(get_db)):
 
 
 
-@app.post("/regstuds/",response_model=schemas.Stubase)
+@app.post("/regstuds/")
 def create_student(stud:schemas.Stubase,db:Session=Depends(get_db)):
     validator = Valdations.StudentVald
     validate_data = validator.validate(stud.dict())
@@ -117,8 +117,13 @@ async def get_student(LID:int,res:Response,db:Session = Depends(get_db)):
 
 
 
-@app.post("/regprof/",response_model=schemas.Profbase)
+@app.post("/regprof/")
 def create_prof(prof:schemas.Profbase,db:Session=Depends(get_db)):
+    validator = ValdationsP.ProfVald
+    validate_data = validator.validate(prof.dict())
+    if any(value for value in validate_data.values()):
+        raise HTTPException(status_code=400, detail=validate_data)
+    
     db_profs = crud.get_prof(db,prof_id=prof.LID)
     if db_profs:
         raise HTTPException(status_code=400,detail="LID already registerd.")
@@ -127,6 +132,11 @@ def create_prof(prof:schemas.Profbase,db:Session=Depends(get_db)):
 
 @app.patch("/upprof/{LID}", response_model=schemas.Profup)
 def update_Prof(LID: int, prof_update: schemas.Profup, db: Session = Depends(get_db)):
+    validator = ValdationsP.ProfVald
+    validate_data = validator.validate(prof_update.dict())
+    if any(value for value in validate_data.values()):
+        raise HTTPException(status_code=400, detail=validate_data)
+    
     prof = crud.get_prof(db=db, prof_id = LID)
     if prof is None:
         raise HTTPException(status_code=404, detail=".استاد یافت نشد")
@@ -169,7 +179,12 @@ def delete_profcous(LID:int,CID:int,db:Session=Depends(get_db)):
 #-------------------------------------Course------------------------------------------------------
 @app.post("/regcous/", response_model=schemas.Coursbase) 
 def create_cours(cours: schemas.Coursbase, db: Session = Depends(get_db)) -> schemas.Coursbase:
-    resp = []
+    validator = ValdationsC.CousVald
+    validate_data = validator.validate(cours.dict())
+    if any(value for value in validate_data.values()):
+        raise HTTPException(status_code=400, detail=validate_data)
+    
+    
     if int(len(str(cours.CID))) > 5:
         raise HTTPException(status_code=406,detail="CID invalid")
     
@@ -181,6 +196,12 @@ def create_cours(cours: schemas.Coursbase, db: Session = Depends(get_db)) -> sch
 
 @app.patch("/UpCourse/{Course_id}", response_model=schemas.Courseup)
 def update_Course(Course_id: int, Course_update: schemas.Courseup, db: Session = Depends(get_db)):
+    validator = ValdationsC.CousVald
+    validate_data = validator.validate(Course_update.dict())
+    if any(value for value in validate_data.values()):
+        raise HTTPException(status_code=400, detail=validate_data)
+    
+    
     Course = crud.get_course(db=db, cid = Course_id)
     if Course is None:
         raise HTTPException(status_code=404, detail="Course not found")

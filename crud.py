@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session , joinedload , join
 from fastapi import Depends, FastAPI, HTTPException
 from . import schemas , models 
-
+from sqlalchemy.exc import IntegrityError
 
 
 #-----------------------------------------------------------Student---------------------------------------------------------------------------------------------
@@ -19,13 +19,16 @@ def getnorm_student(db:Session,stu_id:int):
 
 #______________________________________________________________________________________
 def create_student(db:Session,data):
-    db_student = models.Student(**data.dict())
+    try: 
+     db_student = models.Student(**data.dict())
     
     
-    db.add(db_student)
-    db.commit()
-    db.refresh(db_student)
-    return db_student
+     db.add(db_student)
+     db.commit()
+     db.refresh(db_student)
+     return db_student
+    except IntegrityError:
+        return "یکی از مقادیر واردی قبلا برای کاربر دیگری ثبت شده دوباره تلاش کنی"
 #___________________________________________________________________________________________
 def add_student_course_relation(db: Session, student_id: int, course_id: int):
    try:
@@ -138,14 +141,16 @@ async def getthe_prof(db:Session,lid:int):
         return (False , {} , [".استاد یافت نشد"])
 #_____________________________________________________________________________________________________________________________
 def create_profs(db:Session,profs:schemas.Profbase):
-    db_prof = models.Prof(LID=profs.LID,Fname=profs.Fname,Lname=profs.Lname,ID=profs.ID,Department=profs.Department
+    try:
+     db_prof = models.Prof(LID=profs.LID,Fname=profs.Fname,Lname=profs.Lname,ID=profs.ID,Department=profs.Department
                           ,Major=profs.Major,Birth=profs.Birth,Borncity=profs.Borncity,Address=profs.Address,
                           PostalCode=profs.PostalCode,Cphone=profs.Cphone,Hphone=profs.Hphone)
-    db.add(db_prof)
-    db.commit()
-    db.refresh(db_prof)
-    return db_prof
-
+     db.add(db_prof)
+     db.commit()
+     db.refresh(db_prof)
+     return db_prof
+    except IntegrityError:
+        return "یکی از مقادیر واردی قبلا برای کاربر دیگری ثبت شده دوباره تلاش کنید"
 #_________________________________________________________________________________________________________________________________
 def add_Proffeser_course_relation(db: Session, LID: int, CID: int):
     try: 
