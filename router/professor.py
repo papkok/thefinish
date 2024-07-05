@@ -54,7 +54,7 @@ def update_Prof(LID: int, prof_update: schemas.Profup, db: Session = Depends(get
     return updated_prof
 
 
-app = APIRouter()
+
 
 @app.put("/add_porf_course/{LID}/{CID}")
 def procous(LID:int,CID:int,db:Session=Depends(get_db)):
@@ -64,6 +64,23 @@ def procous(LID:int,CID:int,db:Session=Depends(get_db)):
     else:
         raise HTTPException(status_code=400, detail=message)
     
+@app.patch("/upprof/{LID}", response_model=schemas.Profup)
+def update_prof(LID: int, prof_update: schemas.Profup, db: Session = Depends(get_db)):
+    validator = ValdationsP.ProfVald
+    validate_data = validator.validate(prof_update.dict())
+    if any(value for value in validate_data.values()):
+        raise HTTPException(status_code=400, detail=validate_data)
+    
+    
+    prof = professor.get_prof(db=db, prof_id=LID)
+    if prof is None:
+        raise HTTPException(status_code=404, detail="Course not found")
+
+    updated_prof = professor.update_Professor(db, LID=LID, prof_update=prof_update)
+    if updated_prof is None:
+        raise HTTPException(status_code=404, detail="Course not found")
+    
+    return updated_prof
 
 
 

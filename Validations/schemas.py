@@ -52,15 +52,15 @@ class Profup(BaseModel):
     LID: int
     Fname: str
     Lname: str
-    ID: int
+    ID: str
     Department: str
     Major: str
     Birth: str
     Borncity: str
     Address: str
     PostalCode: int
-    Cphone: int
-    Hphone: int
+    Cphone: str
+    Hphone: str
 
     
 
