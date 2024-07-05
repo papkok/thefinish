@@ -25,7 +25,7 @@ class ProfVald(schemas.Profbase):
                 resp["First name"] = "نام از ده کارکتر طولانی تر است."
             elif any('a' <= char <= 'z' or 'A' <= char <= 'Z' for char in name):
                 resp["First name"] = "اسم خود را به فارسی وارد کنید."
-            elif not name.isalpha():
+            elif  name.isdigit():
                 resp["First name"] = "کارکتر های ورودی باید حروف باشند."
             return resp
                 

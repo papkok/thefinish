@@ -1,8 +1,8 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String ,Table 
 from sqlalchemy.orm import relationship , mapped_column , Mapped , backref
 from sqlalchemy.ext.declarative import declarative_base
-from .database import Base
-Base = declarative_base()
+from .connect import Base
+
 
 
 Stu_profs_association = Table(
@@ -60,7 +60,7 @@ class Prof(Base):
     PostalCode = Column(Integer, unique=True)
     Cphone = Column(String, unique=True)
     Hphone = Column(String, unique=True)
-    LcourseID = relationship("Course",secondary=prof_course,backref= backref("course", lazy='joined'))
+    LcourseID = relationship("Course",secondary=prof_course,backref= backref("Professors", lazy='joined'))
     
     
 

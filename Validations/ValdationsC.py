@@ -14,8 +14,9 @@ class CousVald(schemas.Coursbase):
         cls.resp.clear()
     
         def CID(CID,resp):
+            CID1 = str(CID)
             pattern = (r'^\d\d\d\d\d$')
-            if fullmatch(pattern,CID) == None:
+            if fullmatch(pattern,CID1) == None:
                 resp["CID"] = ".کد درس اشتباه است"
             return resp
             
@@ -23,11 +24,12 @@ class CousVald(schemas.Coursbase):
      
     
         def fname(name,resp):
+            
             if len(name) > 25:
                 resp["Course name"] = "نام درس از 25 کارکتر طولانی تر است."
             elif any('a' <= char <= 'z' or 'A' <= char <= 'Z' for char in name):
                 resp["Course name"] = "اسم درس را به فارسی وارد کنید."
-            elif not name.isalpha():
+            elif  name.isdigit():
                 resp["Course name"] = "کارکتر های ورودی باید حروف باشند."
             return resp
     

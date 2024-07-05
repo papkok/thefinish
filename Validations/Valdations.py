@@ -43,7 +43,7 @@ class StudentVald(schemas.Stubase):
                 resp["lname.Lname"] = "نام از ده کارکتر طولانی تر است."
             elif any('a' <= char <= 'z' or 'A' <= char <= 'Z' for char in name):
                 resp["lname.Lname"] = "نام خانوادگی خود را به فارسی وارد کنید."
-            elif not name.isalpha():
+            elif  name.isdigit():
                 resp["lname.Lname"] = ".کارکتر های ورودی باید حروف باشند"
             return resp
 
