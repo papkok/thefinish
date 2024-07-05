@@ -15,8 +15,8 @@ app = APIRouter()
 #-------------------------------------Course------------------------------------------------------
 @app.get("/getcous/{CID}")
 def get_course(CID:int,db:Session=Depends(get_db)):
-    course = course.get_course(db=db , cid=CID)
-    return course
+    ourse = course.get_course(db=db , cid=CID)
+    return ourse
 
 
 
