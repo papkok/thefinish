@@ -16,13 +16,13 @@ class StudentVald(schemas.Stubase):
         def snum1(snum,resp):
             snum1 = str(snum)
             if not (400 <= int(snum1[:3]) <= 402):
-                resp['snum.STID'] = 'شماره سال نادرست'
+                resp['Student ID'] = 'شماره سال نادرست'
             if len(snum1) != 11:
-                resp['snum.STID'] = "شماره دانشجویی باید 11 رقم باشد."
+                resp['Student ID'] = "شماره دانشجویی باید 11 رقم باشد."
             if snum1[3:9] != '114150':
-                resp['snum.STID'] = "قسمت ثابت نادرست است."
+                resp['Student ID'] = "قسمت ثابت نادرست است."
             if not (1 <= int(snum1[9:11]) <= 99):
-                resp['snum.STID'] = "قسمت اندیس نادرست است."
+                resp['Student ID'] = "قسمت اندیس نادرست است."
             return resp
                 
                 
@@ -30,31 +30,31 @@ class StudentVald(schemas.Stubase):
 
         def fname(name,resp):
             if len(name) > 10:
-                resp["fname.Fname"] = "نام از ده کارکتر طولانی تر است."
+                resp["First Name"] = "نام از ده کارکتر طولانی تر است."
             elif any('a' <= char <= 'z' or 'A' <= char <= 'Z' for char in name):
-                resp["fname.Fname"] = "اسم خود را به فارسی وارد کنید."
+                resp["First Name"] = "اسم خود را به فارسی وارد کنید."
             elif not name.isalpha():
-                resp["fname.Fname"] = "کارکتر های ورودی باید حروف باشند."
+                resp["First Name"] = "کارکتر های ورودی باید حروف باشند."
             return resp
                 
 
         def lname(name,resp):
             if len(name) > 10:
-                resp["lname.Lname"] = "نام از ده کارکتر طولانی تر است."
+                resp["Last Name"] = "نام از ده کارکتر طولانی تر است."
             elif any('a' <= char <= 'z' or 'A' <= char <= 'Z' for char in name):
-                resp["lname.Lname"] = "نام خانوادگی خود را به فارسی وارد کنید."
+                resp["Last Name"] = "نام خانوادگی خود را به فارسی وارد کنید."
             elif  name.isdigit():
-                resp["lname.Lname"] = ".کارکتر های ورودی باید حروف باشند"
+                resp["Last Name"] = ".کارکتر های ورودی باید حروف باشند"
             return resp
 
 
         def father_name(name,resp):
             if len(name) > 10:
-               resp["father_name.Father"] = "نام از ده کارکتر طولانی تر است."
+               resp["Father Name"] = "نام از ده کارکتر طولانی تر است."
             elif any('a' <= char <= 'z' or 'A' <= char <= 'Z' for char in name):
-                resp["father_name.Father"] = "نام پدر خود را به فارسی وارد کنید."
+                resp["Father Name"] = "نام پدر خود را به فارسی وارد کنید."
             elif not name.isalpha():
-                resp["father_name.Father"] = "کارکتر های ورودی باید حروف باشند."
+                resp["Father Name"] = "کارکتر های ورودی باید حروف باشند."
             return resp
                
 
@@ -62,11 +62,11 @@ class StudentVald(schemas.Stubase):
             Birth = datetime.strptime(date,'%Y/%m/%d')
             try:
                 if int(Birth.year) not in range(1303,1402)  or int(Birth.month) not in range(1,13) or int(Birth.day) not in range (1,32):
-                   resp["date_sham.Birth"] = "قالب ورودی اشتباه."
+                   resp["Birth Date"] = "قالب ورودی اشتباه."
                
                    
             except ValueError:
-                    resp["date_sham.Birth"] = "قالب ورودی اشتباه."
+                    resp["Birth Date"] = "قالب ورودی اشتباه."
             
             return resp
 
@@ -74,7 +74,7 @@ class StudentVald(schemas.Stubase):
         def passy(id_num,resp):
             pattern = (r'^\d\d\d\d\d\d.\d\d[آ-ی]$')
             if fullmatch(pattern,id_num) == None:
-                resp["passy.IDS"] = ".قالب ورودی شماره شناسنامه اشتباه است."
+                resp["Pass Number"] = ".قالب ورودی شماره شناسنامه اشتباه است."
             return resp
                 
 
@@ -83,7 +83,7 @@ class StudentVald(schemas.Stubase):
                             "ارومیه", "تهران", "خرم آباد", "رشت", "زاهدان", "زنجان", "ساری", "سمنان", "سنندج", "شهرکرد", "شیراز",
                             "قزوین", "قم", "کرج", "کرمان", "کرمانشاه", "گرگان", "مشهد", "همدان", "یاسوج", "یزد"]
             if city not in valid_cities:
-                resp["prov.Borncity"] = "شهر معتبر نمی‌باشد."
+                resp["Born City"] = "شهر معتبر نمی‌باشد."
             else:
                 pass
             return resp
@@ -91,14 +91,14 @@ class StudentVald(schemas.Stubase):
 
         def addres(address,resp):
             if len(address) > 100:
-                resp["addres.Address"] = "آدرس ورودی از 100 کارکتر بیشتر می‌باشد."
+                resp["Address"] = "آدرس ورودی از 100 کارکتر بیشتر می‌باشد."
             
             return resp    
 
         def postadd(postal_code,resp):
             postal_str = str(postal_code)
             if len(str(postal_code)) != 10 or not postal_str.isdigit():
-                resp["postadd.PostalCode"] = "کد پستی صحیح نمی‌باشد."
+                resp["Postal Code"] = "کد پستی صحیح نمی‌باشد."
             
             return resp    
 
@@ -106,7 +106,7 @@ class StudentVald(schemas.Stubase):
         def pnumb(phone,resp):
             
             if len(phone) != 11 or not phone.startswith('09') or not phone.isdigit():
-                resp["pnumb.Cphone"] = "شماره وارد شده صحیح نمی‌باشد."
+                resp["Personal Phone Number"] = "شماره وارد شده صحیح نمی‌باشد."
            
             return resp    
 
@@ -115,28 +115,28 @@ class StudentVald(schemas.Stubase):
                                 "024", "023", "054", "071", "028", "025", "087", "034", "083", "074", "017", "013", "066",
                                 "011", "086", "076", "081", "035"]
             if len(phone) != 11 or phone[:3] not in valid_area_codes or phone[3] not in ['3', '4', '5', '8']:
-                resp['hnumb.Hphone'] = 'شماره وارد شده صحیح نیست.'
+                resp['Home Phone Number'] = 'شماره وارد شده صحیح نیست.'
             return resp
                 
 
         def coll(department,resp):
             valid_departments = ["فنی و مهندسی", 'علوم پایه', 'علوم انسانی', 'دامپزشکی', 'اقتصاد', 'کشاورزی', 'منابع طبیعی']
             if department not in valid_departments:
-                resp["coll.Department"] = 'دانشکده غیر مجاز است.'
+                resp["Department"] = 'دانشکده غیر مجاز است.'
             return resp
                 
 
         def fos(major,resp):
             valid_majors = ["مهندسی عمران", "مهندسی مکانیک", "مهندسی برق", "مهندسی صنایع", "مهندسی شیمی", "مهندسی کامپیوتر"]
             if major not in valid_majors:
-               resp["fos.FieldofStudy"] = 'رشته تحصیلی غیر مجاز است.'
+               resp["FieldofStudy"] = 'رشته تحصیلی غیر مجاز است.'
             else:
                 pass
             return resp
         def mrstate(married,resp):
             list = ["مجرد" , 'متاهل']
             if married not in list:
-                resp["mrstate.married"] = '.وضعیت تاهل نامعتبر'
+                resp["Marrige State"] = '.وضعیت تاهل نامعتبر'
             return resp
         def codemel(code,resp):
             l = len(code)
@@ -153,7 +153,7 @@ class StudentVald(schemas.Stubase):
             if r == c:
                 pass
             else:
-                resp['codemel.code'] = 'کد ملی معتبر نیست'
+                resp['ID'] = 'کد ملی معتبر نیست'
             return resp
 
         
