@@ -56,7 +56,7 @@ def update_Prof(LID: int, prof_update: schemas.Profup, db: Session = Depends(get
 
 
 
-@app.put("/add_porf_course/{LID}/{CID}")
+@app.put("/addprfcor/{LID}/{CID}")
 def procous(LID:int,CID:int,db:Session=Depends(get_db)):
     success, message = professor.add_Proffeser_course_relation(db=db, LID = LID, CID=CID)
     if success:
@@ -93,7 +93,7 @@ def delete_prof(lid:int,db:Session=Depends(get_db)):
 
 
 
-@app.put("/deleteprfcous/{LID}/{CID}")
+@app.put("/delprfcor/{LID}/{CID}")
 def delete_profcous(LID:int,CID:int,db:Session=Depends(get_db)):
     success, message = professor.delete_profcous(db=db, LID = LID, CID=CID)
     if success:

@@ -13,7 +13,7 @@ app = APIRouter()
 
 
 #-------------------------------------Course------------------------------------------------------
-@app.get("/getcous/{CID}")
+@app.get("/getcor/{CID}")
 def get_course(CID:int,db:Session=Depends(get_db)):
     ourse = course.get_course(db=db , cid=CID)
     return ourse
@@ -39,7 +39,7 @@ def create_cours(cours: schemas.Coursbase, db: Session = Depends(get_db)) -> sch
 
 
 
-@app.patch("/UpCourse/{Course_id}", response_model=schemas.Courseup)
+@app.patch("/upcor/{Course_id}", response_model=schemas.Courseup)
 def update_Course(Course_id: int, Course_update: schemas.Courseup, db: Session = Depends(get_db)):
     validator = ValdationsC.CousVald
     validate_data = validator.validate(Course_update.dict())
@@ -60,7 +60,7 @@ def update_Course(Course_id: int, Course_update: schemas.Courseup, db: Session =
 
 
 
-@app.get("/delcous/{CID}")
+@app.get("/delcor/{CID}")
 def delete_cours(CID:int ,db:Session=Depends(get_db)):
     db_course = course.get_course(db,cid=CID)
     if  db_course is None:

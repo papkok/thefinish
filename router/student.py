@@ -52,7 +52,7 @@ def update_Student(STID: int, stu_update: schemas.stuupdate, db: Session = Depen
 
 
 
-@app.put("/add_student_course/{student_id}/{course_id}")
+@app.put("/addstucor/{student_id}/{course_id}")
 def add_student_to_course(student_id: int, course_id: int, db: Session = Depends(get_db)):
     success, message = student.add_student_course_relation(db=db, student_id=student_id, course_id=course_id)
     if success:
@@ -62,7 +62,7 @@ def add_student_to_course(student_id: int, course_id: int, db: Session = Depends
     
 
 
-@app.put("/add_student_prof/{student_id}/{prof_id}")
+@app.put("/addstuprf/{student_id}/{prof_id}")
 def add_student_to_profs(student_id: int , prof_id: int , db:Session = Depends(get_db)):
     success , message = student.add_student_professer_relation(db=db , student_id=student_id , prof_id=prof_id)
     if success:
@@ -72,7 +72,7 @@ def add_student_to_profs(student_id: int , prof_id: int , db:Session = Depends(g
 
 
 
-@app.put("/delete_stuprof/{STID}/{LID}")
+@app.put("/delstuprof/{STID}/{LID}")
 def Delete_Prof_Stu(STID:int , LID:int , db:Session=Depends(get_db)):
     success , message = student.delete_stuprof(db=db , STID=STID , LID=LID)
     if success:
@@ -82,7 +82,7 @@ def Delete_Prof_Stu(STID:int , LID:int , db:Session=Depends(get_db)):
 
 
 
-@app.put("/deletestucous/{STID}/{CID}")
+@app.put("/delstucor/{STID}/{CID}")
 def delete_cous_stu(STID:int,CID:int,db:Session=Depends(get_db)):
     success , message = student.delete_stucous(db=db , STID=STID , CID=CID)
     if success:
