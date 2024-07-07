@@ -59,8 +59,9 @@ class StudentVald(schemas.Stubase):
                
 
         def date_sham(date,resp):
-            Birth = datetime.strptime(date,'%Y/%m/%d')
+            
             try:
+                Birth = datetime.strptime(date,'%Y/%m/%d')
                 if int(Birth.year) not in range(1303,1402)  or int(Birth.month) not in range(1,13) or int(Birth.day) not in range (1,32):
                    resp["Birth Date"] = "قالب ورودی اشتباه."
                
