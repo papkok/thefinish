@@ -14,6 +14,7 @@ class StudentVald(schemas.Stubase):
         cls.resp.clear()
         
         def snum1(snum,resp):
+           try: 
             snum1 = str(snum)
             if not (400 <= int(snum1[:3]) <= 402):
                 resp['Student ID'] = 'شماره سال نادرست'
@@ -24,7 +25,8 @@ class StudentVald(schemas.Stubase):
             if not (1 <= int(snum1[9:11]) <= 99):
                 resp['Student ID'] = "قسمت اندیس نادرست است."
             return resp
-                
+           except ValueError:
+               return ".کد دانشجو اشتباه است"     
                 
                   
 
